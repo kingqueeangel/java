@@ -2,3 +2,10 @@
 css/
 imgs/
 /logs
+/logindemo/target/tomcat/logs/access_log.2022-04-19
+/logindemo/target/tomcat/logs/access_log.2022-04-18
+*.war
+*.zip
+*.jar
+*.ear
+*.bak
