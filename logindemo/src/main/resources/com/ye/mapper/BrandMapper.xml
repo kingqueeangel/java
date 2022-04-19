@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ye.mapper.BrandMapper">
+
+    <resultMap id="brandResultMap" type="Brand">
+        <result column="brand_name" property="brandName"/>
+        <result column="company_name" property="companyName"/>
+    </resultMap>
+    <insert id="addBrand" useGeneratedKeys="true" keyProperty="id">
+        insert into tb_brand
+        values (null, #{brandName}, #{companyName}, #{ordered}, #{description}, #{status}, #{user})
+    </insert>
+    <update id="updateBrand">
+        update tb_brand
+        set brand_name   = #{brandName},
+            company_name = #{companyName},
+            ordered      = #{ordered},
+            description  = #{description},
+            status       = #{status}
+        where id = #{id}
+          and user = #{user};
+    </update>
+    <delete id="deleteById">
+        delete
+        from tb_brand
+        where id = #{id};
+    </delete>
+    <delete id="deleteBrand">
+        delete
+        from tb_brand
+        where id = #{id};
+    </delete>
+    <delete id="deleteSelectBrand">
+        delete from tb_brand where id in
+        <foreach collection="list" item="Brand" separator="," open="(" close=")">
+            #{Brand.id}
+        </foreach>;
+    </delete>
+    <select id="selectAll" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        where user = #{user};
+    </select>
+
+    <select id="selectById" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        where id = #{id}
+    </select>
+    <select id="selectPage" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        where user = #{id}
+        limit #{currentPage},#{pageSize};
+    </select>
+    <select id="allBrands" resultType="java.lang.Integer">
+        select count(*)
+        from tb_brand
+        where user = #{id};
+    </select>
+    <select id="selectByCondition" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        <where>
+            <if test="brand.status != null">
+                and status = #{brand.status}
+            </if>
+            <if test="brand.companyName != null and brand.companyName != '' ">
+                and company_name like "%"#{brand.companyName}"%"
+            </if>
+            <if test="brand.brandName != null and brand.brandName != '' ">
+                and brand_name like "%"#{brand.brandName}"%"
+            </if>
+            <if test="brand.user != null">
+                and user = #{brand.user}
+            </if>
+        </where>
+        limit #{currentPage},#{pageSize};
+    </select>
+
+    <select id="selectByConditionCount" resultType="java.lang.Integer">
+        select count(*)
+        from tb_brand
+        <where>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="companyName != null and companyName != '' ">
+                and company_name like "%"#{companyName}"%"
+            </if>
+            <if test="brandName != null and brandName != '' ">
+                and brand_name like "%"#{brandName}"%"
+            </if>
+            <if test="user != null">
+                and user = #{user}
+            </if>
+
+        </where>
+        ;
+    </select>
+
+
+</mapper>

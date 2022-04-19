@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎注册</title>
+    <link href="css/register.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="form-div" id="app">
+    <div class="reg-content">
+        <h1>欢迎注册</h1>
+        <span>已有帐号？</span> <a href="login.html">登录</a>
+    </div>
+    <form id="reg-form" action="" method="post">
+
+        <table>
+
+            <tr>
+                <td>用户名</td>
+                <td class="inputs">
+                    <input name="userName" type="text" id="username" v-model="user.username" @blur="queryUser()">
+                    <br>
+                    <div id="username_err" class="err_msg" v-show="flag==true">用户名已存在</div>
+                </td>
+            </tr>
+
+            <tr>
+                <td>密码</td>
+                <td class="inputs">
+                    <input name="password" type="password" id="password" v-model="user.password">
+                    <br>
+                    <span id="password_err" class="err_msg" v-show="pFlag==false">密码格式有误</span>
+                </td>
+            </tr>
+
+
+            <tr>
+                <td>验证码</td>
+                <td class="inputs">
+                    <input name="checkCode" type="text" id="checkCode" v-model="checkCode" @input="queryCheckCode()">
+                    <img id="checkCodeImg" src="/login/user/createCheckCode">
+                    <a href="#" id="changeImg" onclick="">看不清？</a>
+                    <br>
+                    <span id="checkCode_err" class="err_msg" v-show="cFlag==false">验证码错误</span>
+                </td>
+            </tr>
+
+        </table>
+
+        <div class="buttons">
+            <input value="注 册" type="button" id="reg_btn" @click="register">
+        </div>
+        <br class="clear">
+    </form>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+<script src="js/axios-0.18.0.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<script>
+
+
+    new Vue({
+        el: '#app',
+        data() {
+            return {
+                user: {
+                    "username": '',
+                    "password": '',
+                },
+                checkCode: '',
+                flag: "flase",
+                pFlag: "true",
+                cFlag: "true"
+            }
+        },
+        methods: {
+            queryUser() {
+                var _this = this;
+                axios({
+                    method: "get",
+                    url: "http://localhost/login/user/userNameIsExits?username=" + _this.user.username,
+                }).then(function (resp) {
+                    _this.flag = resp.data;
+                });
+            },
+            queryCheckCode() {
+                var _this = this;
+                axios({
+                    method: "get",
+                    url: "http://localhost/login/user/checkCode?checkCode=" + _this.checkCode,
+                }).then(function (resp) {
+                    _this.cFlag = resp.data;
+                });
+            },
+            register() {
+                var _this = this;
+                if (_this.flag == false && _this.cFlag == true) {
+                    axios({
+                        method: "post",
+                        url: "http://localhost/login/user/register",
+                        data: _this.user
+                    }).then(function (resp) {
+                        if (resp.data == "success") {
+                            _this.successAdd();
+                        } else {
+                            _this.failAdd();
+                        }
+                    });
+                } else {
+                    this.$message.error('请输入正确信息！');
+                }
+            },
+            successAdd() {
+                this.$alert('注册用户成功！', '提示', {
+                    confirmButtonText: '确定',
+                    callback: action => {
+                        action:location.href = "http://localhost/login/login.html"
+                    }
+                });
+            },
+            failAdd() {
+                this.$message({
+                    message: '对不起，注册失败。',
+                    type: 'error'
+                });
+            }
+        },
+    });
+    document.getElementById("changeImg").onclick = function () {
+        document.getElementById("checkCodeImg").src = "/login/user/createCheckCode?" + new Date().getMilliseconds();
+    };
+    document.getElementById("checkCodeImg").onclick = function () {
+        document.getElementById("checkCodeImg").src = "/login/user/createCheckCode?" + new Date().getMilliseconds();
+    };
+    /*document.getElementById("username").onblur = function () {
+        let username = this.value;
+        let http;
+        if (window.XMLHttpRequest) {
+            http = new XMLHttpRequest();
+        } else {
+            // code for IE6, IE5
+            http = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+
+        //TODO AXIOS改造
+        http.open("GET", "http://localhost/login/usernameServlet?username=" + username);
+        http.send();
+        http.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                if (this.responseText == "true") {
+                    document.getElementById("username_err").innerText = "用户名已存在";
+                } else {
+                    document.getElementById("username_err").innerText = '';
+                }
+            }
+        }
+    };*/
+
+
+</script>
+</body>
+</html>

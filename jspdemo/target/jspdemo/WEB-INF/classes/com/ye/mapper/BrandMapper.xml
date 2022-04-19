@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.ye.mapper.BrandMapper">
+
+    <resultMap id="brandResultMap" type="Brand">
+        <result column="brand_name" property="brandName"/>
+        <result column="company_name" property="companyName"/>
+    </resultMap>
+    <insert id="add">
+        insert into tb_brand
+        VALUES (null, #{brandName}, #{companyName}, #{ordered}, #{description}, #{status});
+    </insert>
+    <update id="update">
+        update tb_brand
+        set brand_name  = #{brand.brandName},
+            company_name= #{brand.companyName},
+            ordered     = #{brand.ordered},
+            description = #{brand.description},
+            status      = #{brand.status}
+        where id = #{id};
+    </update>
+
+    <delete id="deleteByIdAfter">
+        delete
+        from tb_brand
+        where id = #{id};
+    </delete>
+
+
+    <select id="selectAll" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        ;
+    </select>
+    <select id="selectById" resultMap="brandResultMap">
+        select *
+        from tb_brand
+        where id = #{id}
+    </select>
+
+
+</mapper>
