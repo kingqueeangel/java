@@ -7,6 +7,8 @@ import com.ye.pojo.User;
 import com.ye.service.UserService;
 import com.ye.service.impl.UserServiceImpl;
 import com.ye.util.CheckCodeUtil;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
@@ -21,10 +23,13 @@ import java.io.IOException;
 @WebServlet("/user/*")
 public class UserServlet extends BaseServlet {
 
+    private static final ApplicationContext app = new ClassPathXmlApplicationContext("applicationContext.xml");
+
     private UserService service = new UserServiceImpl();
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
+        UserService userDao = (UserService)app.getBean("userDao");
         //创建读取对象
         BufferedReader br = request.getReader();
         //读取浏览器发送的请求
@@ -36,7 +41,7 @@ public class UserServlet extends BaseServlet {
         String password = (String) jsonObject.get("password");
         Object remember = jsonObject.get("remember");
         //根据用户名密码查询是否存在
-        User user = service.select(username, password);
+        User user = userDao.select(username, password);
         //判断查询结果是否为空
         if (user != null) {
             //进入登陆界面

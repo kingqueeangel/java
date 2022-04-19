@@ -9,7 +9,8 @@
         <encoder>
             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度
                 %msg：日志消息，%n是换行符-->
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level]  %c [%thread] : %msg%n</pattern>
+            <!--<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%-5level]  %c [%thread] : %msg%n</pattern>-->
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] %c [%thread] : %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -37,7 +38,7 @@
    ， 默认debug
     <root>可以包含零个或多个<appender-ref>元素，标识这个输出位置将会被本日志级别控制。
     -->
-    <root level="ALL">
+    <root level="DEBUG">
        <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE" />
     </root>
